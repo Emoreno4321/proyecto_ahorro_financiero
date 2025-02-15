@@ -45,7 +45,7 @@ def chatbot():
             # Obtener el valor ingresado por el usuario
             costo = request.form.get('costo')
             if costo and costo.isdigit():
-                costo = float(costo)
+                costo = int(costo)
                 ahorro_semanal = costo * 7
                 ahorro_mensual = costo * 30
                 ahorro_anual = costo * 365
