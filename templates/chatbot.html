@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot de Gastos Hormiga</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .bienvenida {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff5722;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .result-box {
+            background: #e9f7ef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 5px solid #28a745;
+        }
+        .reset-btn {
+            background-color: #dc3545;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .reset-btn:hover {
+            background-color: #a71d2a;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Chatbot de Gastos Hormiga</h1>
+    <p class="bienvenida">{{ mensaje }}</p>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="categoria" class="form-label">**Selecciona una categoría:**</label>
+            <select class="form-select" name="categoria" id="categoria" onchange="this.form.submit()">
+                {% for categoria in categorias %}
+                <option value="{{ categoria }}" {% if categoria == seleccion_categoria %}selected{% endif %}>
+                    {{ categoria }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if lista_gastos %}
+        <div class="mb-3">
+            <label for="gasto" class="form-label">**Selecciona un gasto:**</label>
+            <select class="form-select" name="gasto" id="gasto" onchange="this.form.submit()">
+                {% for gasto in lista_gastos %}
+                <option value="{{ gasto }}" {% if gasto == seleccion_gasto %}selected{% endif %}>
+                    {{ gasto }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        {% if seleccion_gasto %}
+        <div class="mb-3">
+            <label for="costo" class="form-label">**Ingresa el costo diario de este gasto:**</label>
+            <input type="number" class="form-control" name="costo" id="costo" min="0" step="0.01" value="{{ request.form.get('costo', '') }}" required>
+        </div>
+        <button type="submit" class="btn btn-custom">Calcular Ahorro</button>
+        {% endif %}
+    </form>
+
+    {% if recomendacion %}
+    <div class="result-box mt-4">
+        <h4>Recomendación:</h4>
+        <p>{{ recomendacion }}</p>
+    </div>
+    {% endif %}
+
+    {% if ahorro_semanal is not none %}
+    <div class="result-box mt-4">
+        <h4>Posible Ahorro:</h4>
+        <p><strong>Semanal:</strong> ${{ ahorro_semanal|round(2) }}</p>
+        <p><strong>Mensual:</strong> ${{ ahorro_mensual|round(2) }}</p>
+        <p><strong>Anual:</strong> ${{ ahorro_anual|round(2) }}</p>
+    </div>
+    {% endif %}
+
+    <button class="btn reset-btn" onclick="window.location.href='/'">Nueva Consulta</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
